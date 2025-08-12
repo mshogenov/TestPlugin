@@ -14,8 +14,8 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <Button Content="Получить" 
-                    Command="{Binding GetCommand}"/>
+            <Button Content="Получить"
+                    Command="{Binding GetCommand}" />
             <TextBlock Text="Округлять результат до " />
             <Border BorderThickness="2"
                     BorderBrush="Gray" Padding="5">
@@ -34,20 +34,91 @@
                       SelectedItem="{Binding SelectedRatio}" />
         </StackPanel>
         <DataGrid Grid.Row="1"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
                   ItemsSource="{Binding SumParameterItems }"
                   AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Имя параметра"
                                     Binding="{Binding ParameterName}"
                                     IsReadOnly="True" />
-                <DataGridTextColumn Header="Значение"
-                                    Binding="{Binding ParameterValueDisplay}"
-                                    IsReadOnly="True" />
+                <DataGridTemplateColumn Header="Значение" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding ParameterValueDisplay}"
+                                           VerticalAlignment="Center"
+                                           Margin="5,0" />
+
+                                <Button Grid.Column="1"
+                                        x:Name="CopyButton"
+                                        Content="📋"
+                                        ToolTip="Копировать"
+                                        Width="20"
+                                        Height="20"
+                                        Margin="2"
+                                        Visibility="Hidden"
+                                        Command="{Binding DataContext.CopyCommand, 
+                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding ParameterValueDisplay}" />
+                            </Grid>
+                            <DataTemplate.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsMouseOver, 
+                             RelativeSource={RelativeSource AncestorType=DataGridRow}}"
+                                    Value="True">
+                                    <Setter TargetName="CopyButton" Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Ед.изм."
                                     Binding="{Binding Path=ToUnitLabel}"
                                     IsReadOnly="True" />
-                <DataGridTextColumn Header="С коэффициентом"
-                                    Binding="{Binding Path=ParameterValueCoefficient}" />
+                <DataGridTemplateColumn Header="С коэффициентом">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding ParameterValueCoefficient}"
+                                           VerticalAlignment="Center"
+                                           Margin="5,0" />
+
+                                <Button Grid.Column="1"
+                                        x:Name="CopyButton"
+                                        Content="📋"
+                                        ToolTip="Копировать"
+                                        Width="20"
+                                        Height="20"
+                                        Margin="2"
+                                        Visibility="Hidden"
+                                        Command="{Binding DataContext.CopyCommand, 
+                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding ParameterValueCoefficient}" />
+                            </Grid>
+                            <DataTemplate.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsMouseOver, 
+                             RelativeSource={RelativeSource AncestorType=DataGridRow}}"
+                                    Value="True">
+                                    <Setter TargetName="CopyButton" Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using SumParameters.Models;
@@ -104,6 +106,7 @@ public sealed class MainWindowVM : INotifyPropertyChanged
     public ICommand UpValueRoundingCommand { get; }
     public ICommand DownValueRoundingCommand { get; }
     public ICommand GetCommand { get; }
+    public ICommand CopyCommand { get; }
 
     public MainWindowVM(ExternalCommandData commandData)
     {
@@ -111,6 +114,7 @@ public sealed class MainWindowVM : INotifyPropertyChanged
         _doc = _uiDoc.Document;
         UpValueRoundingCommand = new RelayCommand(UpValueRounding, CanUpValueRounding);
         DownValueRoundingCommand = new RelayCommand(DownValueRounding, CanDownValueRounding);
+        CopyCommand = new RelayCommand(CopyToClipboard);
         GetCommand = new RelayCommand(Get);
         var selectedIds = _uiDoc.Selection.GetElementIds();
         if (selectedIds.Count <= 0) return;
@@ -123,6 +127,17 @@ public sealed class MainWindowVM : INotifyPropertyChanged
             SumParameterItems.Add(new SumParameterItem(parameter, elements, SelectedRatio, ValueRounding));
         }
     }
+
+    private void CopyToClipboard(object parameter)
+    {
+        string value = parameter?.ToString();
+        if (!string.IsNullOrEmpty(value))
+        {
+            Clipboard.SetText(value);
+          
+        }
+    }
+
 
     private void Get()
     {
