@@ -27,18 +27,22 @@
             </Border>
             <TextBlock Margin="5 0" Text="знаков." />
             <TextBlock Text="Коэффициент" />
-            <ComboBox />
+            <ComboBox ItemsSource="{Binding Ratios}" 
+                      SelectedItem="{Binding SelectedRatio}"/>
         </StackPanel>
         <DataGrid Grid.Row="1"
                   ItemsSource="{Binding SumParameterItems }"
                   AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Имя параметра"
-                                    Binding="{Binding ParameterName}" />
+                                    Binding="{Binding ParameterName}"
+                                    IsReadOnly="True" />
                 <DataGridTextColumn Header="Значение"
-                                    Binding="{Binding ParameterValue}" />
+                                    Binding="{Binding ParameterValue}"
+                                    IsReadOnly="True" />
                 <DataGridTextColumn Header="Ед.изм."
-                                    Binding="{Binding Path=ToUnitLabel}" />
+                                    Binding="{Binding Path=ToUnitLabel}"
+                                    IsReadOnly="True" />
                 <DataGridTextColumn Header="С коэффициентом"
                                     Binding="{Binding Path=ParameterValueCoefficient}" />
             </DataGrid.Columns>

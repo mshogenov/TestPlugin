@@ -17,6 +17,43 @@ public sealed class MainWindowVM : INotifyPropertyChanged
     private readonly UIDocument _uiDoc;
     private ObservableCollection<SumParameterItem> _sumParameterItems = [];
 
+    private List<double> _ratios =
+    [
+        0.0001,
+        0.001,
+        0.01,
+        0.1,
+        1,
+        10,
+        100,
+        1000,
+        10000
+    ];
+
+    public List<double> Ratios
+    {
+        get => _ratios;
+        set
+        {
+            if (Equals(value, _ratios)) return;
+            _ratios = value ?? throw new ArgumentNullException(nameof(value));
+            OnPropertyChanged();
+        }
+    }
+
+    private double _selectedRatio = 1;
+
+    public double SelectedRatio
+    {
+        get => _selectedRatio;
+        set
+        {
+            if (value.Equals(_selectedRatio)) return;
+            _selectedRatio = value;
+            UpdateValues();
+            OnPropertyChanged();
+        }
+    }
 
     public ObservableCollection<SumParameterItem> SumParameterItems
     {
@@ -26,6 +63,14 @@ public sealed class MainWindowVM : INotifyPropertyChanged
             if (Equals(value, _sumParameterItems)) return;
             _sumParameterItems = value ?? throw new ArgumentNullException(nameof(value));
             OnPropertyChanged();
+        }
+    }
+
+    private void UpdateValues()
+    {
+        foreach (var sumParameterItem in SumParameterItems)
+        {
+            sumParameterItem.ParameterValueCoefficient = sumParameterItem.ParameterValue * SelectedRatio;
         }
     }
 
@@ -48,7 +93,7 @@ public sealed class MainWindowVM : INotifyPropertyChanged
                 .OrderBy(x => x.Definition.Name);
             foreach (var parameter in genericParameters)
             {
-                SumParameterItems.Add(new SumParameterItem(parameter, elements));
+                SumParameterItems.Add(new SumParameterItem(parameter, elements, SelectedRatio));
             }
         }
     }

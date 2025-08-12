@@ -1,40 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
 
 namespace SumParameters.Models;
 
-public class SumParameterItem
+public class SumParameterItem : INotifyPropertyChanged
 {
     public string ParameterName { get; set; }
     public double ParameterValue { get; set; }
-    public UnitOfMeasurement UnitOfMeasurement { get; set; }
-    public double ParameterValueCoefficient { get; set; }
+    private double _parameterValueCoefficient;
+
+    public double ParameterValueCoefficient
+    {
+        get => _parameterValueCoefficient;
+        set
+        {
+            if (value.Equals(_parameterValueCoefficient)) return;
+            _parameterValueCoefficient = value;
+            OnPropertyChanged();
+        }
+    }
+
     public string ToUnitLabel { get; set; }
 
-    public SumParameterItem(Parameter parameter, List<Element> elements)
+    public SumParameterItem(Parameter parameter, List<Element> elements, double selectedRatio)
     {
-        if (parameter == null) return;
         ParameterName = parameter.Definition.Name;
-        ParameterValueCoefficient = 1.0;
-        // Получаем единицы измерения параметра
-        // GetParameterUnits(parameter);
         ToUnitLabel = GetUnitSymbolSimple(parameter);
         foreach (var element in elements)
         {
             var param = element.get_Parameter(parameter.Definition);
             if (param != null && !string.IsNullOrEmpty(param.AsValueString()))
             {
-                if (double.TryParse(param.AsValueString(),
-                        NumberStyles.Float,
-                        CultureInfo.InvariantCulture,
+                if (double.TryParse(param.AsValueString(), NumberStyles.Float, CultureInfo.InvariantCulture,
                         out double value))
                 {
                     ParameterValue += value;
                 }
             }
         }
+
+        ParameterValueCoefficient = ParameterValue * selectedRatio;
     }
 
     private string GetUnitSymbolSimple(Parameter parameter)
@@ -65,76 +73,18 @@ public class SumParameterItem
         return "";
     }
 
-    private void GetParameterUnits(Parameter parameter)
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
-        var specTypeId = parameter.Definition.GetDataType();
-
-        if (UnitUtils.IsMeasurableSpec(specTypeId))
-        {
-            // Получаем единицы измерения из документа
-            var doc = parameter.Element.Document;
-            var units = doc.GetUnits();
-            var formatOptions = units.GetFormatOptions(specTypeId);
-            var unitTypeId = formatOptions.GetUnitTypeId();
-
-            // Получаем символ единицы измерения
-            ToUnitLabel = LabelUtils.GetLabelForUnit(unitTypeId);
-
-            // Альтернативный способ получить читаемое имя
-            // ToUnitLabel = unitTypeId.TypeId;
-        }
-        else
-        {
-            ToUnitLabel = "No Units";
-        }
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-// Альтернативный метод для получения значения с конвертацией
-    private double GetParameterValueInDisplayUnits(Parameter param)
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
-        if (param == null || !param.HasValue) return 0;
-        try
-        {
-            var specTypeId = param.Definition.GetDataType();
-
-            if (UnitUtils.IsMeasurableSpec(specTypeId))
-            {
-                var doc = param.Element.Document;
-                var units = doc.GetUnits();
-                var formatOptions = units.GetFormatOptions(specTypeId);
-                var unitTypeId = formatOptions.GetUnitTypeId();
-
-                // Конвертируем из внутренних единиц в единицы отображения
-                double internalValue = param.AsDouble();
-                return UnitUtils.ConvertFromInternalUnits(internalValue, unitTypeId);
-            }
-        }
-        catch (Exception e)
-        {
-            return 0;
-        }
-
-        return 0;
-    }
-
-    public double GetValueInSpecificUnits(Parameter param, ForgeTypeId targetUnitTypeId)
-    {
-        if (param == null || !param.HasValue) return 0;
-
-        double internalValue = param.AsDouble();
-        return UnitUtils.ConvertFromInternalUnits(internalValue, targetUnitTypeId);
-    }
-
-    private bool HasUnits(ForgeTypeId specTypeId)
-    {
-        // Проверяем, имеет ли тип данных единицы измерения
-        return specTypeId == SpecTypeId.Length ||
-               specTypeId == SpecTypeId.Area ||
-               specTypeId == SpecTypeId.Volume ||
-               specTypeId == SpecTypeId.Angle ||
-               specTypeId == SpecTypeId.Mass ||
-               specTypeId == SpecTypeId.Force ||
-               specTypeId == SpecTypeId.Acceleration ||
-               specTypeId == SpecTypeId.Energy;
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
     }
 }
