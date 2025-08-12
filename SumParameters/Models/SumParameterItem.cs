@@ -1,4 +1,7 @@
-﻿using Autodesk.Revit.DB;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Autodesk.Revit.DB;
 
 namespace SumParameters.Models;
 
@@ -8,84 +11,130 @@ public class SumParameterItem
     public double ParameterValue { get; set; }
     public UnitOfMeasurement UnitOfMeasurement { get; set; }
     public double ParameterValueCoefficient { get; set; }
-    // Добавляем свойство для отображения единиц на русском
-    public string UnitDisplayName => GetRussianUnitName(UnitOfMeasurement);
-    public SumParameterItem(Parameter parameter)
+    public string ToUnitLabel { get; set; }
+
+    public SumParameterItem(Parameter parameter, List<Element> elements)
     {
         if (parameter == null) return;
-    
         ParameterName = parameter.Definition.Name;
         ParameterValueCoefficient = 1.0;
-    
-        if (parameter.StorageType == StorageType.Double)
+        // Получаем единицы измерения параметра
+        // GetParameterUnits(parameter);
+        ToUnitLabel = GetUnitSymbolSimple(parameter);
+        foreach (var element in elements)
         {
-            double value = parameter.AsDouble();
-            var specTypeId = parameter.Definition.GetDataType();
-        
-            (UnitOfMeasurement, ParameterValue) = specTypeId switch
+            var param = element.get_Parameter(parameter.Definition);
+            if (param != null && !string.IsNullOrEmpty(param.AsValueString()))
             {
-                var x when x == SpecTypeId.Length => 
-                    (UnitOfMeasurement.Millimeters, UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Millimeters)),
-            
-                var x when x == SpecTypeId.Area => 
-                    (UnitOfMeasurement.SquareMillimeters, UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.SquareMillimeters)),
-            
-                var x when x == SpecTypeId.Volume => 
-                    (UnitOfMeasurement.CubicMillimeters, UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.CubicMillimeters)),
-            
-                var x when x == SpecTypeId.Angle => 
-                    (UnitOfMeasurement.Degrees, UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Degrees)),
-            
-                var x when x == SpecTypeId.Mass => 
-                    (UnitOfMeasurement.Kilograms, UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Kilograms)),
-            
-                _ => (UnitOfMeasurement.Number, value)
-            };
+                if (double.TryParse(param.AsValueString(),
+                        NumberStyles.Float,
+                        CultureInfo.InvariantCulture,
+                        out double value))
+                {
+                    ParameterValue += value;
+                }
+            }
+        }
+    }
+
+    private string GetUnitSymbolSimple(Parameter parameter)
+    {
+        if (parameter == null || !parameter.HasValue)
+            return "";
+
+        string valueString = parameter.AsValueString();
+
+        if (string.IsNullOrEmpty(valueString))
+            return "";
+
+        // Ищем последовательность букв и символов после чисел
+        var regex = new System.Text.RegularExpressions.Regex(@"^[\d\s.,\-]+(.*)$");
+        var match = regex.Match(valueString.Trim());
+
+        if (match.Success && match.Groups.Count > 1)
+        {
+            string units = match.Groups[1].Value.Trim();
+
+            // Проверяем, что это действительно единицы, а не число
+            if (!string.IsNullOrEmpty(units) && !double.TryParse(units, out _))
+            {
+                return units;
+            }
+        }
+
+        return "";
+    }
+
+    private void GetParameterUnits(Parameter parameter)
+    {
+        var specTypeId = parameter.Definition.GetDataType();
+
+        if (UnitUtils.IsMeasurableSpec(specTypeId))
+        {
+            // Получаем единицы измерения из документа
+            var doc = parameter.Element.Document;
+            var units = doc.GetUnits();
+            var formatOptions = units.GetFormatOptions(specTypeId);
+            var unitTypeId = formatOptions.GetUnitTypeId();
+
+            // Получаем символ единицы измерения
+            ToUnitLabel = LabelUtils.GetLabelForUnit(unitTypeId);
+
+            // Альтернативный способ получить читаемое имя
+            // ToUnitLabel = unitTypeId.TypeId;
         }
         else
         {
-            UnitOfMeasurement = UnitOfMeasurement.Number;
-            ParameterValue = 0;
+            ToUnitLabel = "No Units";
         }
     }
-    private string GetRussianUnitName(UnitOfMeasurement unit)
+
+// Альтернативный метод для получения значения с конвертацией
+    private double GetParameterValueInDisplayUnits(Parameter param)
     {
-        return unit switch
+        if (param == null || !param.HasValue) return 0;
+        try
         {
-            UnitOfMeasurement.Millimeters => "мм",
-            UnitOfMeasurement.Centimeters => "см",
-            UnitOfMeasurement.Meters => "м",
-            UnitOfMeasurement.Inches => "дюйм",
-            UnitOfMeasurement.Feet => "фут",
-            
-            UnitOfMeasurement.SquareMillimeters => "мм²",
-            UnitOfMeasurement.SquareCentimeters => "см²",
-            UnitOfMeasurement.SquareMeters => "м²",
-            UnitOfMeasurement.SquareInches => "дюйм²",
-            UnitOfMeasurement.SquareFeet => "фут²",
-            
-            UnitOfMeasurement.CubicMillimeters => "мм³",
-            UnitOfMeasurement.CubicCentimeters => "см³",
-            UnitOfMeasurement.CubicMeters => "м³",
-            UnitOfMeasurement.CubicInches => "дюйм³",
-            UnitOfMeasurement.CubicFeet => "фут³",
-            UnitOfMeasurement.Liters => "л",
-            
-            UnitOfMeasurement.Degrees => "°",
-            UnitOfMeasurement.Radians => "рад",
-            
-            UnitOfMeasurement.Kilograms => "кг",
-            UnitOfMeasurement.Grams => "г",
-            UnitOfMeasurement.Pounds => "фунт",
-            
-            UnitOfMeasurement.Celsius => "°C",
-            UnitOfMeasurement.Fahrenheit => "°F",
-            UnitOfMeasurement.Kelvin => "K",
-            
-            UnitOfMeasurement.Number => "",
-            UnitOfMeasurement.Percent => "%",
-            
-            _ => unit.ToString()
-        };
+            var specTypeId = param.Definition.GetDataType();
+
+            if (UnitUtils.IsMeasurableSpec(specTypeId))
+            {
+                var doc = param.Element.Document;
+                var units = doc.GetUnits();
+                var formatOptions = units.GetFormatOptions(specTypeId);
+                var unitTypeId = formatOptions.GetUnitTypeId();
+
+                // Конвертируем из внутренних единиц в единицы отображения
+                double internalValue = param.AsDouble();
+                return UnitUtils.ConvertFromInternalUnits(internalValue, unitTypeId);
+            }
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+
+        return 0;
+    }
+
+    public double GetValueInSpecificUnits(Parameter param, ForgeTypeId targetUnitTypeId)
+    {
+        if (param == null || !param.HasValue) return 0;
+
+        double internalValue = param.AsDouble();
+        return UnitUtils.ConvertFromInternalUnits(internalValue, targetUnitTypeId);
+    }
+
+    private bool HasUnits(ForgeTypeId specTypeId)
+    {
+        // Проверяем, имеет ли тип данных единицы измерения
+        return specTypeId == SpecTypeId.Length ||
+               specTypeId == SpecTypeId.Area ||
+               specTypeId == SpecTypeId.Volume ||
+               specTypeId == SpecTypeId.Angle ||
+               specTypeId == SpecTypeId.Mass ||
+               specTypeId == SpecTypeId.Force ||
+               specTypeId == SpecTypeId.Acceleration ||
+               specTypeId == SpecTypeId.Energy;
     }
 }

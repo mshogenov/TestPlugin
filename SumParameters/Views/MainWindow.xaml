@@ -38,7 +38,7 @@
                 <DataGridTextColumn Header="Значение"
                                     Binding="{Binding ParameterValue}" />
                 <DataGridTextColumn Header="Ед.изм."
-                                    Binding="{Binding Path=UnitDisplayName}" />
+                                    Binding="{Binding Path=ToUnitLabel}" />
                 <DataGridTextColumn Header="С коэффициентом"
                                     Binding="{Binding Path=ParameterValueCoefficient}" />
             </DataGrid.Columns>

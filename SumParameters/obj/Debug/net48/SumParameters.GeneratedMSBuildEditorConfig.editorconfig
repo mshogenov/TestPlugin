@@ -1,6 +1,6 @@
 is_global = true
 build_property.RootNamespace = SumParameters
-build_property.ProjectDir = C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\
+build_property.ProjectDir = C:\Users\mshog\RiderProjects\TestPlugin\SumParameters\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.CsWinRTUseWindowsUIXamlProjections = false
