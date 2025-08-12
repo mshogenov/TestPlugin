@@ -14,21 +14,24 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <Button Content="Получить" />
+            <Button Content="Получить" 
+                    Command="{Binding GetCommand}"/>
             <TextBlock Text="Округлять результат до " />
             <Border BorderThickness="2"
                     BorderBrush="Gray" Padding="5">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="2" Margin="5 0" />
+                    <TextBlock Text="{Binding ValueRounding}" Margin="5 0" />
                     <Button Content="+" Padding="3"
+                            Command="{Binding UpValueRoundingCommand}"
                             Margin="5 0" />
-                    <Button Content="-" Padding="3" />
+                    <Button Content="-" Padding="3"
+                            Command="{Binding DownValueRoundingCommand}" />
                 </StackPanel>
             </Border>
             <TextBlock Margin="5 0" Text="знаков." />
             <TextBlock Text="Коэффициент" />
-            <ComboBox ItemsSource="{Binding Ratios}" 
-                      SelectedItem="{Binding SelectedRatio}"/>
+            <ComboBox ItemsSource="{Binding Ratios}"
+                      SelectedItem="{Binding SelectedRatio}" />
         </StackPanel>
         <DataGrid Grid.Row="1"
                   ItemsSource="{Binding SumParameterItems }"
@@ -38,7 +41,7 @@
                                     Binding="{Binding ParameterName}"
                                     IsReadOnly="True" />
                 <DataGridTextColumn Header="Значение"
-                                    Binding="{Binding ParameterValue}"
+                                    Binding="{Binding ParameterValueDisplay}"
                                     IsReadOnly="True" />
                 <DataGridTextColumn Header="Ед.изм."
                                     Binding="{Binding Path=ToUnitLabel}"

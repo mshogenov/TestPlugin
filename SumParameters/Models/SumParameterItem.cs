@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -9,7 +10,20 @@ namespace SumParameters.Models;
 public class SumParameterItem : INotifyPropertyChanged
 {
     public string ParameterName { get; set; }
-    public double ParameterValue { get; set; }
+    private readonly double _parameterValue;
+    private double _parameterValueDisplay;
+
+    public double ParameterValueDisplay
+    {
+        get => _parameterValueDisplay;
+        set
+        {
+            if (value.Equals(_parameterValueDisplay)) return;
+            _parameterValueDisplay = value;
+            OnPropertyChanged();
+        }
+    }
+
     private double _parameterValueCoefficient;
 
     public double ParameterValueCoefficient
@@ -25,7 +39,7 @@ public class SumParameterItem : INotifyPropertyChanged
 
     public string ToUnitLabel { get; set; }
 
-    public SumParameterItem(Parameter parameter, List<Element> elements, double selectedRatio)
+    public SumParameterItem(Parameter parameter, List<Element> elements, double selectedRatio, int valueRounding)
     {
         ParameterName = parameter.Definition.Name;
         ToUnitLabel = GetUnitSymbolSimple(parameter);
@@ -37,12 +51,20 @@ public class SumParameterItem : INotifyPropertyChanged
                 if (double.TryParse(param.AsValueString(), NumberStyles.Float, CultureInfo.InvariantCulture,
                         out double value))
                 {
-                    ParameterValue += value;
+                    _parameterValue += value;
                 }
             }
         }
 
-        ParameterValueCoefficient = ParameterValue * selectedRatio;
+        RoundingValue(valueRounding);
+        ParameterValueCoefficient = ParameterValueDisplay * selectedRatio;
+    }
+
+    public void RoundingValue(int valueRounding)
+    {
+        if (valueRounding < 0) return;
+        var round = Math.Round(_parameterValue, valueRounding);
+        ParameterValueDisplay = round;
     }
 
     private string GetUnitSymbolSimple(Parameter parameter)

@@ -4,9 +4,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using SumParameters.Models;
+using SumParameters.Services;
 
 namespace SumParameters.ViewModels;
 
@@ -30,6 +32,7 @@ public sealed class MainWindowVM : INotifyPropertyChanged
         10000
     ];
 
+
     public List<double> Ratios
     {
         get => _ratios;
@@ -41,6 +44,21 @@ public sealed class MainWindowVM : INotifyPropertyChanged
         }
     }
 
+    private int _valueRounding = 0;
+
+    public int ValueRounding
+    {
+        get => _valueRounding;
+        set
+        {
+            if (value == _valueRounding) return;
+            _valueRounding = value;
+            UpdateValues();
+            OnPropertyChanged();
+        }
+    }
+
+
     private double _selectedRatio = 1;
 
     public double SelectedRatio
@@ -50,7 +68,7 @@ public sealed class MainWindowVM : INotifyPropertyChanged
         {
             if (value.Equals(_selectedRatio)) return;
             _selectedRatio = value;
-            UpdateValues();
+            UpdateValuesCoefficient();
             OnPropertyChanged();
         }
     }
@@ -66,36 +84,80 @@ public sealed class MainWindowVM : INotifyPropertyChanged
         }
     }
 
+    private void UpdateValuesCoefficient()
+    {
+        foreach (var sumParameterItem in SumParameterItems)
+        {
+            sumParameterItem.ParameterValueCoefficient = sumParameterItem.ParameterValueDisplay * SelectedRatio;
+        }
+    }
+
     private void UpdateValues()
     {
         foreach (var sumParameterItem in SumParameterItems)
         {
-            sumParameterItem.ParameterValueCoefficient = sumParameterItem.ParameterValue * SelectedRatio;
+            sumParameterItem.RoundingValue(ValueRounding);
+            sumParameterItem.ParameterValueCoefficient = sumParameterItem.ParameterValueDisplay * SelectedRatio;
         }
     }
+
+    public ICommand UpValueRoundingCommand { get; }
+    public ICommand DownValueRoundingCommand { get; }
+    public ICommand GetCommand { get; }
 
     public MainWindowVM(ExternalCommandData commandData)
     {
         _uiDoc = commandData.Application.ActiveUIDocument;
         _doc = _uiDoc.Document;
-
+        UpValueRoundingCommand = new RelayCommand(UpValueRounding, CanUpValueRounding);
+        DownValueRoundingCommand = new RelayCommand(DownValueRounding, CanDownValueRounding);
+        GetCommand = new RelayCommand(Get);
         var selectedIds = _uiDoc.Selection.GetElementIds();
-        if (selectedIds.Count > 0)
+        if (selectedIds.Count <= 0) return;
+        List<Element> elements = [];
+        elements.AddRange(selectedIds.Select(elementId => _doc.GetElement(elementId)));
+        var genericParameters = GetGenericParameters(elements)
+            .OrderBy(x => x.Definition.Name);
+        foreach (var parameter in genericParameters)
         {
-            List<Element> elements = [];
-            foreach (var elementId in selectedIds)
-            {
-                elements.Add(_doc.GetElement(elementId));
-            }
-
-// Найти общие параметры
-            var genericParameters = GetGenericParameters(elements)
-                .OrderBy(x => x.Definition.Name);
-            foreach (var parameter in genericParameters)
-            {
-                SumParameterItems.Add(new SumParameterItem(parameter, elements, SelectedRatio));
-            }
+            SumParameterItems.Add(new SumParameterItem(parameter, elements, SelectedRatio, ValueRounding));
         }
+    }
+
+    private void Get()
+    {
+        SumParameterItems.Clear();
+        var selectedIds = _uiDoc.Selection.GetElementIds();
+        if (selectedIds.Count <= 0) return;
+        List<Element> elements = [];
+        elements.AddRange(selectedIds.Select(elementId => _doc.GetElement(elementId)));
+        var genericParameters = GetGenericParameters(elements)
+            .OrderBy(x => x.Definition.Name);
+        foreach (var parameter in genericParameters)
+        {
+            SumParameterItems.Add(new SumParameterItem(parameter, elements, SelectedRatio, ValueRounding));
+        }
+    }
+
+    private void DownValueRounding()
+    {
+        ValueRounding--;
+    }
+
+    private bool CanDownValueRounding()
+    {
+        return ValueRounding > 0;
+    }
+
+
+    private void UpValueRounding()
+    {
+        ValueRounding++;
+    }
+
+    private bool CanUpValueRounding()
+    {
+        return ValueRounding < 10;
     }
 
     private List<Parameter> GetGenericParameters(List<Element> elements)
@@ -134,7 +196,6 @@ public sealed class MainWindowVM : INotifyPropertyChanged
             .Where(p => firstElementParameterIds.Contains(p.Definition.Name))
             .ToList();
     }
-
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
