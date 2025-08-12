@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>Тестовый плагин</Name>
+    <Assembly>C:\Users\User\AppData\Roaming\Autodesk\Revit\Addins\2024\SumParameters\SumParameters.dll</Assembly>
+    <AddInId>12345678-1234-1234-1234-123456789012</AddInId>
+    <FullClassName>SumParameters.Application</FullClassName>
+    <VendorId>MY</VendorId>
+    <VendorDescription></VendorDescription>
+  </AddIn>
+</RevitAddIns>

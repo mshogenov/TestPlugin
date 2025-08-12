@@ -1,0 +1,9 @@
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\bin\Debug\netstandard2.1\SumParameters.deps.json
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\bin\Debug\netstandard2.1\SumParameters.dll
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\bin\Debug\netstandard2.1\SumParameters.pdb
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\netstandard2.1\SumParameters.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\netstandard2.1\SumParameters.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\netstandard2.1\SumParameters.AssemblyInfo.cs
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\netstandard2.1\SumParameters.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\netstandard2.1\SumParameters.dll
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\netstandard2.1\SumParameters.pdb

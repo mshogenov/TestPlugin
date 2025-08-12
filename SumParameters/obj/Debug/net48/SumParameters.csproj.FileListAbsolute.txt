@@ -1,0 +1,14 @@
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters.csproj.AssemblyReference.cache
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters.AssemblyInfo.cs
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\bin\Debug\net48\SumParameters.dll
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\bin\Debug\net48\SumParameters.pdb
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters.dll
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters.pdb
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\Views\MainWindow.g.cs
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters_MarkupCompile.cache
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters_MarkupCompile.lref
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\Views\MainWindow.baml
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters.g.resources

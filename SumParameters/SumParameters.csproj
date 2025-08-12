@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <UseWpf>true</UseWpf>
+        <TargetFramework>net48</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="RevitAPI">
+        <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2024\RevitAPI.dll</HintPath>
+        <Private>False</Private>
+      </Reference>
+      <Reference Include="RevitAPIUI">
+        <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2024\RevitAPIUI.dll</HintPath>
+        <Private>False</Private>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\Icon16.ico" />
+      <Resource Include="Resources\Icon16.ico" />
+      <None Remove="Resources\Icon32.ico" />
+      <Resource Include="Resources\Icon32.ico" />
+    </ItemGroup>
+
+</Project>
