@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using SumParameters.Services;
 using SumParameters.Views;
 
 namespace SumParameters.Commands;
@@ -10,8 +11,9 @@ public class SumParametersCommand : IExternalCommand
 {
     public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
     {
+        if (WindowController.Focus<MainWindow>()) return Result.Succeeded;
         var view = new MainWindow();
-        view.ShowDialog();
+        WindowController.Show(view, commandData.Application.MainWindowHandle);
         return Result.Succeeded;
     }
 }

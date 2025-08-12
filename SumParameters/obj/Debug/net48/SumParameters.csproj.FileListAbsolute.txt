@@ -12,3 +12,4 @@ C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48
 C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters_MarkupCompile.lref
 C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\Views\MainWindow.baml
 C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters.g.resources
+C:\Users\User\source\repos\mshogenov\SumParameters\SumParameters\obj\Debug\net48\SumParameters.sourcelink.json
