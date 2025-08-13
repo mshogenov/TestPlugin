@@ -8,16 +8,20 @@
         xmlns:vm="clr-namespace:SumParameters.ViewModels"
         d:DataContext="{d:DesignInstance vm:MainWindowVM}"
         Title="Сумма параметров" Height="450" Width="800">
-    <Grid>
+    <Grid Margin="7">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal"
+                    Margin="0 0 0 5">
             <Button Content="Получить"
+                    Margin="0 0 5 0"
                     Command="{Binding GetCommand}" />
-            <TextBlock Text="Округлять результат до " />
-            <Border BorderThickness="2"
+            <TextBlock Text="Округлять результат до "
+                       VerticalAlignment="Center"
+                       Margin=" 0 0 5 0" />
+            <Border BorderThickness="1"
                     BorderBrush="Gray" Padding="5">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding ValueRounding}" Margin="5 0" />
@@ -28,8 +32,11 @@
                             Command="{Binding DownValueRoundingCommand}" />
                 </StackPanel>
             </Border>
-            <TextBlock Margin="5 0" Text="знаков." />
-            <TextBlock Text="Коэффициент" />
+            <TextBlock Margin="5 0" Text="знаков."
+                       VerticalAlignment="Center" />
+            <TextBlock Text="Коэффициент"
+                       Margin="0 0 5 0"
+                       VerticalAlignment="Center" />
             <ComboBox ItemsSource="{Binding Ratios}"
                       SelectedItem="{Binding SelectedRatio}" />
         </StackPanel>
@@ -41,8 +48,11 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Имя параметра"
                                     Binding="{Binding ParameterName}"
+                                    Width="2*"
                                     IsReadOnly="True" />
-                <DataGridTemplateColumn Header="Значение" IsReadOnly="True">
+                <DataGridTemplateColumn Header="Значение"
+                                        IsReadOnly="True"
+                                        Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
@@ -64,9 +74,8 @@
                                         Height="20"
                                         Margin="2"
                                         Visibility="Hidden"
-                                        Command="{Binding DataContext.CopyCommand, 
-                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        CommandParameter="{Binding ParameterValueDisplay}" />
+                                        Tag="{Binding ParameterValueDisplay}"
+                                        Click="CopyButton_OnClick" />
                             </Grid>
                             <DataTemplate.Triggers>
                                 <DataTrigger
@@ -81,8 +90,10 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Ед.изм."
                                     Binding="{Binding Path=ToUnitLabel}"
+                                    Width="0.3*"
                                     IsReadOnly="True" />
-                <DataGridTemplateColumn Header="С коэффициентом">
+                <DataGridTemplateColumn Header="С коэффициентом"
+                                        Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
@@ -104,9 +115,8 @@
                                         Height="20"
                                         Margin="2"
                                         Visibility="Hidden"
-                                        Command="{Binding DataContext.CopyCommand, 
-                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        CommandParameter="{Binding ParameterValueCoefficient}" />
+                                        Tag="{Binding ParameterValueCoefficient}"
+                                        Click="CopyButton_OnClick" />
                             </Grid>
                             <DataTemplate.Triggers>
                                 <DataTrigger
@@ -121,5 +131,18 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Popup Name="CopyPopup"
+               Placement="Custom"
+               AllowsTransparency="True">
+            <Border Background="LightGreen"
+                    CornerRadius="5"
+                    Padding="15,8"
+                    BorderThickness="1">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="✓" FontWeight="Bold" Margin="0,0,5,0" />
+                    <TextBlock Name="PopupMessage" Text="Скопировано!" />
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </Window>

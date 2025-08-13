@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SumParameters")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1a56708f8e6a50ea00efff2bfa23af37343f6e4d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+196fe1722691468cb2f7f4d927cbc8ab5f32fa4c")]
 [assembly: System.Reflection.AssemblyProductAttribute("SumParameters")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SumParameters")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

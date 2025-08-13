@@ -62,6 +62,7 @@ public sealed class MainWindowVM : INotifyPropertyChanged
 
 
     private double _selectedRatio = 1;
+    private readonly JsonDataLoader _dataLoader;
 
     public double SelectedRatio
     {
@@ -90,7 +91,7 @@ public sealed class MainWindowVM : INotifyPropertyChanged
     {
         foreach (var sumParameterItem in SumParameterItems)
         {
-            sumParameterItem.ParameterValueCoefficient = sumParameterItem.ParameterValueDisplay * SelectedRatio;
+            sumParameterItem.UpdateValueCoefficient(SelectedRatio);
         }
     }
 
@@ -99,14 +100,13 @@ public sealed class MainWindowVM : INotifyPropertyChanged
         foreach (var sumParameterItem in SumParameterItems)
         {
             sumParameterItem.RoundingValue(ValueRounding);
-            sumParameterItem.ParameterValueCoefficient = sumParameterItem.ParameterValueDisplay * SelectedRatio;
+            sumParameterItem.UpdateValueCoefficient(SelectedRatio);
         }
     }
 
     public ICommand UpValueRoundingCommand { get; }
     public ICommand DownValueRoundingCommand { get; }
     public ICommand GetCommand { get; }
-    public ICommand CopyCommand { get; }
 
     public MainWindowVM(ExternalCommandData commandData)
     {
@@ -114,10 +114,21 @@ public sealed class MainWindowVM : INotifyPropertyChanged
         _doc = _uiDoc.Document;
         UpValueRoundingCommand = new RelayCommand(UpValueRounding, CanUpValueRounding);
         DownValueRoundingCommand = new RelayCommand(DownValueRounding, CanDownValueRounding);
-        CopyCommand = new RelayCommand(CopyToClipboard);
         GetCommand = new RelayCommand(Get);
+        GetSumParameterItems();
+        _dataLoader = new JsonDataLoader("SumParameters.json");
+        var loadData = _dataLoader.LoadData<SumParametersDTO>();
+        if (loadData != null)
+        {
+            SelectedRatio = loadData.SelectedRatio;
+            ValueRounding = loadData.ValueRounding;
+        }
+    }
+
+    private void GetSumParameterItems()
+    {
         var selectedIds = _uiDoc.Selection.GetElementIds();
-        if (selectedIds.Count <= 0) return;
+        if (selectedIds.Count == 0) return;
         List<Element> elements = [];
         elements.AddRange(selectedIds.Select(elementId => _doc.GetElement(elementId)));
         var genericParameters = GetGenericParameters(elements)
@@ -128,30 +139,22 @@ public sealed class MainWindowVM : INotifyPropertyChanged
         }
     }
 
-    private void CopyToClipboard(object parameter)
+    public void SaveData()
     {
-        string value = parameter?.ToString();
-        if (!string.IsNullOrEmpty(value))
+        if (_dataLoader != null)
         {
-            Clipboard.SetText(value);
-          
+            _dataLoader.SaveData(new SumParametersDTO()
+            {
+                SelectedRatio = SelectedRatio,
+                ValueRounding = ValueRounding
+            });
         }
     }
-
 
     private void Get()
     {
         SumParameterItems.Clear();
-        var selectedIds = _uiDoc.Selection.GetElementIds();
-        if (selectedIds.Count <= 0) return;
-        List<Element> elements = [];
-        elements.AddRange(selectedIds.Select(elementId => _doc.GetElement(elementId)));
-        var genericParameters = GetGenericParameters(elements)
-            .OrderBy(x => x.Definition.Name);
-        foreach (var parameter in genericParameters)
-        {
-            SumParameterItems.Add(new SumParameterItem(parameter, elements, SelectedRatio, ValueRounding));
-        }
+        GetSumParameterItems();
     }
 
     private void DownValueRounding()
@@ -215,13 +218,5 @@ public sealed class MainWindowVM : INotifyPropertyChanged
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        OnPropertyChanged(propertyName);
-        return true;
     }
 }

@@ -1,31 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mshog\\RiderProjects\\TestPlugin\\SumParameters\\SumParameters.csproj": {}
+    "C:\\Users\\User\\RiderProjects\\TestPlugin\\SumParameters\\SumParameters.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mshog\\RiderProjects\\TestPlugin\\SumParameters\\SumParameters.csproj": {
+    "C:\\Users\\User\\RiderProjects\\TestPlugin\\SumParameters\\SumParameters.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mshog\\RiderProjects\\TestPlugin\\SumParameters\\SumParameters.csproj",
+        "projectUniqueName": "C:\\Users\\User\\RiderProjects\\TestPlugin\\SumParameters\\SumParameters.csproj",
         "projectName": "SumParameters",
-        "projectPath": "C:\\Users\\mshog\\RiderProjects\\TestPlugin\\SumParameters\\SumParameters.csproj",
-        "packagesPath": "C:\\Users\\mshog\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mshog\\RiderProjects\\TestPlugin\\SumParameters\\obj\\",
+        "projectPath": "C:\\Users\\User\\RiderProjects\\TestPlugin\\SumParameters\\SumParameters.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\User\\RiderProjects\\TestPlugin\\SumParameters\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\mshog\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0-windows"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -44,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0-windows7.0": {
@@ -68,7 +62,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
