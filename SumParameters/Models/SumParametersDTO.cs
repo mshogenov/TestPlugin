@@ -2,6 +2,6 @@
 
 public class SumParametersDTO
 {
-    public double SelectedRatio { get; set; }
+    public decimal SelectedRatio { get; set; }
     public int ValueRounding { get; set; }
 }

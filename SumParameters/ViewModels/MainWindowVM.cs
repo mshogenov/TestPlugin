@@ -21,21 +21,21 @@ public sealed class MainWindowVM : INotifyPropertyChanged
     private readonly UIDocument _uiDoc;
     private ObservableCollection<SumParameterItem> _sumParameterItems = [];
 
-    private List<double> _ratios =
+    private List<decimal> _ratios =
     [
-        0.0001,
-        0.001,
-        0.01,
-        0.1,
-        1,
-        10,
-        100,
-        1000,
-        10000
+        0.0001m,
+        0.001m,
+        0.01m,
+        0.1m,
+        1m,
+        10m,
+        100m,
+        1000m,
+        10000m
     ];
 
 
-    public List<double> Ratios
+    public List<decimal> Ratios
     {
         get => _ratios;
         set
@@ -61,10 +61,10 @@ public sealed class MainWindowVM : INotifyPropertyChanged
     }
 
 
-    private double _selectedRatio = 1;
+    private decimal _selectedRatio = 1;
     private readonly JsonDataLoader _dataLoader;
 
-    public double SelectedRatio
+    public decimal SelectedRatio
     {
         get => _selectedRatio;
         set

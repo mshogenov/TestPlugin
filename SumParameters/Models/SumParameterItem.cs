@@ -11,9 +11,9 @@ public class SumParameterItem : INotifyPropertyChanged
 {
     public string ParameterName { get; set; }
     private readonly double _parameterValue;
-    private double _parameterValueDisplay;
+    private decimal _parameterValueDisplay;
 
-    public double ParameterValueDisplay
+    public decimal ParameterValueDisplay
     {
         get => _parameterValueDisplay;
         set
@@ -24,9 +24,9 @@ public class SumParameterItem : INotifyPropertyChanged
         }
     }
 
-    private double _parameterValueCoefficient;
+    private decimal _parameterValueCoefficient;
 
-    public double ParameterValueCoefficient
+    public decimal ParameterValueCoefficient
     {
         get => _parameterValueCoefficient;
         set
@@ -39,7 +39,7 @@ public class SumParameterItem : INotifyPropertyChanged
 
     public string ToUnitLabel { get; set; }
 
-    public SumParameterItem(Parameter parameter, List<Element> elements, double selectedRatio, int valueRounding)
+    public SumParameterItem(Parameter parameter, List<Element> elements, decimal selectedRatio, int valueRounding)
     {
         ParameterName = parameter.Definition.Name;
         ToUnitLabel = GetUnitSymbolSimple(parameter);
@@ -63,11 +63,11 @@ public class SumParameterItem : INotifyPropertyChanged
     public void RoundingValue(int valueRounding)
     {
         if (valueRounding < 0) return;
-        var round = Math.Round(_parameterValue, valueRounding);
-        ParameterValueDisplay = round;
+        double round = Math.Round(_parameterValue, valueRounding);
+        ParameterValueDisplay = (decimal)round;
     }
 
-    public void UpdateValueCoefficient(double selectedRatio)
+    public void UpdateValueCoefficient(decimal selectedRatio)
     {
         ParameterValueCoefficient = ParameterValueDisplay * selectedRatio;
     }
